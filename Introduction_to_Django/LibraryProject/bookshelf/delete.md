@@ -7,6 +7,6 @@ book = Book.objects.get(title="Nineteen Eighty-Four")
 book.delete()
 
 # Try retrieving books again
-from bookshelf import models
+from bookshelf.models import Book
 Book.objects.all()
 # Output: <QuerySet []>
