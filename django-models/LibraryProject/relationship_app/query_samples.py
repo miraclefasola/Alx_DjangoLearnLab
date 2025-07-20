@@ -8,20 +8,27 @@ django.setup()
 from .models import *
 
 #book by author
-def books_by_author(author_name):
-    try:
-        author = Author.objects.get(name = author_name)
-        books = Book.objects.filter(author__name = author_name)
+# def books_by_author(author_name):
+#     try:
+#         author = Author.objects.get(name = author_name)
+#         books = Book.objects.filter(author__name = author_name)
 
     
-        if books.exists():
-            for book in books:
-             print (f"{book.title} by {book.author.name}")
-        else:
-            print (f"{author_name} has no book in our database")
+#         if books.exists():
+#             for book in books:
+#              print (f"{book.title} by {book.author.name}")
+#         else:
+#             print (f"{author_name} has no book in our database")
+#     except Author.DoesNotExist:
+#         print (f"{author_name} is not in our database")
+def get_books_by_author(author_name):
+    try:
+        author = Author.objects.get(name=author_name)
+        books = Book.objects.filter(author=author)
+        for book in books:
+            print(book.title)
     except Author.DoesNotExist:
-        print (f"{author_name} is not in our database")
-
+        print(f"No author found with name {author_name}")
 
 #For all books
 
