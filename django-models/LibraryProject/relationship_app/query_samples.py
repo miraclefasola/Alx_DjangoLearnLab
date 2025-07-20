@@ -25,19 +25,28 @@ def books_by_author(author_name):
 
 #For all books
 
-def book_in_library(library_name):
-    try:
-        library = Library.objects.get(name = library_name)
-        book = Book.objects.filter(library__name = library_name)
-        if not book.exists():
-            print(f"Book not present in {library_name}")
-        else:
-            for books in book:
-                print(f"{books.title}")
+# def book_in_library(library_name):
+#     try:
+#         library = Library.objects.get(name = library_name)
+#         book = Book.objects.filter(library__name = library_name)
+#         if not book.exists():
+#             print(f"Book not present in {library_name}")
+#         else:
+#             for books in book:
+#                 print(f"{books.title}")
            
                       
+#     except Library.DoesNotExist:
+#         print (f"{library_name} does not exist in our database")
+
+def books_in_library(library_name):
+    try:
+        library = Library.objects.get(name=library_name)
+        books = library.books.all()                       
+        for book in books:
+            print(book.title)
     except Library.DoesNotExist:
-        print (f"{library_name} does not exist in our database")
+        print("Library not found")
 
 #librarian for library
 def retrieve_librarian(library_name):
