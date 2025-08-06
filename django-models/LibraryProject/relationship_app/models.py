@@ -12,9 +12,7 @@ class Book(models.Model):
     author = models.ForeignKey(Author, on_delete= models.SET_NULL, null=True, blank=True)
     class Meta:
        permissions=[
-            ('add_book', 'Can add book'),
-            ('change_book', 'Can change book'),
-            ('delete_book', 'Can delete book'),
+            ('can_add_book', 'can_change_book','can_delete_book')
         ]
     def __str__(self):
         return self.title
