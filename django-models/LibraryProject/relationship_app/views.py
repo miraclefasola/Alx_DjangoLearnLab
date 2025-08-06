@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from .models import Library
 from django.views.generic.detail import DetailView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from .models import *
 
 
 # Create your views here.
@@ -24,7 +25,7 @@ class UserRegisterView(CreateView):
   
 from django.core.exceptions import PermissionDenied
 from django.views.generic import TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 class RoleRequiredMixin(LoginRequiredMixin):
     required_roles = []
@@ -53,4 +54,28 @@ class MemberView(RoleRequiredMixin, TemplateView):
     template_name = 'relationship_app/member_view.html'
     required_roles = ['Member']
 
-@user_passes_test   
+class BookAddView(PermissionRequiredMixin, RoleRequiredMixin, CreateView):
+    model = Book
+    fields = ['title', 'author', 'published_date']
+    template_name = 'relationship/book_form.html'
+    permission_required = 'Book.add_book'
+    required_roles = ['Admin', 'Librarian']
+    success_url = reverse_lazy('book_list') 
+
+class ChangeBookView(UpdateView, RoleRequiredMixin, PermissionRequiredMixin):
+    permission_required = 'Book.change_book'
+    required_roles = ['Admin', 'Librarian']
+    template_name= ''
+    model = Book
+    fields = ['title', 'author', 'published_date']
+    success_url = reverse_lazy('book_list') 
+
+class DeleteBookView(DeleteView, RoleRequiredMixin, PermissionRequiredMixin):
+    permission_required = 'Book.delete_book'
+    required_roles = ['Admin', 'Librarian']
+    template_name= ''
+    model = Book
+    fields = ['title', 'author', 'published_date']
+    success_url = reverse_lazy('book_list') 
+
+@PermissionRequired
