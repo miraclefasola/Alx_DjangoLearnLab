@@ -78,4 +78,10 @@ class DeleteBookView(DeleteView, RoleRequiredMixin, PermissionRequiredMixin):
     fields = ['title', 'author', 'published_date']
     success_url = reverse_lazy('book_list') 
 
-@PermissionRequired
+from django.contrib.auth.decorators import permission_required
+
+@permission_required
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
