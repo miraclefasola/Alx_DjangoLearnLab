@@ -5,7 +5,7 @@ from .models import Library
 
 # Create your views here.
 def book(request):
-    return render(request, 'list_books.html')
+    return render(request, 'relationship_app/list_books.html', 'Book.objects.all()')
 
 class LibararyView(ListView):
     template_name= 'library_detail.html'
