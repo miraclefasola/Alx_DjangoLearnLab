@@ -22,8 +22,35 @@ class UserRegisterView(CreateView):
     template_name = 'relationship_app/register.html'
     success_url = reverse_lazy('login')
   
-  
-    # This is just to satisfy the checker seeing as my code is functional
-form = UserCreationForm()
+from django.core.exceptions import PermissionDenied
+from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+class RoleRequiredMixin(LoginRequiredMixin):
+    required_roles = []
+
+    def dispatch(self, request, *args, **kwargs):
+        user = request.user
+        if not user.is_authenticated:
+            from django.contrib.auth.views import redirect_to_login
+            return redirect_to_login(request.get_full_path())
+
+        user_profile = getattr(user, 'userprofile', None)
+        if user_profile and user_profile.role in self.required_roles:
+            return super().dispatch(request, *args, **kwargs)
+
+        raise PermissionDenied("You do not have permission to access this page.")
+
+class AdminView(RoleRequiredMixin, TemplateView):
+    template_name = 'admin_view.html'
+    required_roles = ['Admin']
+
+class LibrarianView(RoleRequiredMixin, TemplateView):
+    template_name = 'librarian_view.html'
+    required_roles = ['Librarian']
+
+class MemberView(RoleRequiredMixin, TemplateView):
+    template_name = 'member_view.html'
+    required_roles = ['Member']
 
     
