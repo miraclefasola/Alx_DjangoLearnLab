@@ -11,7 +11,7 @@ class Book(models.Model):
     title = models.CharField(max_length=300)
     author = models.ForeignKey(Author, on_delete= models.SET_NULL, null=True, blank=True)
     class Meta:
-       [
+       permissions=[
             ('add_book', 'Can add book'),
             ('change_book', 'Can change book'),
             ('delete_book', 'Can delete book'),
