@@ -42,15 +42,15 @@ class RoleRequiredMixin(LoginRequiredMixin):
         raise PermissionDenied("You do not have permission to access this page.")
 
 class AdminView(RoleRequiredMixin, TemplateView):
-    template_name = 'admin_view.html'
+    template_name = 'relationship_app/admin_view.html'
     required_roles = ['Admin']
 
 class LibrarianView(RoleRequiredMixin, TemplateView):
-    template_name = 'librarian_view.html'
+    template_name = 'relationship_app/librarian_view.html'
     required_roles = ['Librarian']
 
 class MemberView(RoleRequiredMixin, TemplateView):
-    template_name = 'member_view.html'
+    template_name = 'relationship_app/member_view.html'
     required_roles = ['Member']
 
-    
+@user_passes_test   
