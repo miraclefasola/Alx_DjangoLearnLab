@@ -57,7 +57,7 @@ class MemberView(RoleRequiredMixin, TemplateView):
 class BookAddView(PermissionRequiredMixin, RoleRequiredMixin, CreateView):
     model = Book
     fields = ['title', 'author', 'published_date']
-    template_name = 'relationship/book_form.html'
+    template_name = 'relationship_app/book_form.html'
     permission_required = 'Book.add_book'
     required_roles = ['Admin', 'Librarian']
     success_url = reverse_lazy('book_list') 

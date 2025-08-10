@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Editor Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, Editor!</h1>
+<p>This is your dashboard where you can edit content.</p>
+<h1>{% if object %}Edit Book{% else %}Add New Book{% endif %}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if object %}Update{% else %}Create{% endif %}</button>
+</form>
+
+{% endblock %}
