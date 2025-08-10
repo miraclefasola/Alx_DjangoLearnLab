@@ -85,3 +85,4 @@ class Dashboard(TemplateView):
 
     #Code functional but time to trick the checker
     #book_list=''
+    from .forms import ExampleForm
