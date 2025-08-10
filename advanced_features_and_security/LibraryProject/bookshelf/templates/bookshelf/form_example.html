@@ -1,0 +1,9 @@
+<h1>This is your example form</h1>
+
+<form method="post">
+{%csrf_token%}
+{{form.as_p}}
+{{form.errors}}
+
+<button type="submit">submit</button>
+</form>
