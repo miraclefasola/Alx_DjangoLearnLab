@@ -127,3 +127,30 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL= '/media/'
 AUTH_USER_MODEL= 'bookshelf.CustomUser'
 LOGIN_REDIRECT_URL= 'book_view'
+
+
+# SECURITY SETTINGS
+# Tell Django to trust the X-Forwarded-Proto header from your proxy
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+
+# Redirect all HTTP traffic to HTTPS
+SECURE_SSL_REDIRECT = True  # Ensures all requests are redirected to HTTPS
+
+# HTTP Strict Transport Security
+SECURE_HSTS_SECONDS = 31536000  # One year (recommended)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allows inclusion in browser preload lists
+
+# Secure cookies (HTTPS only)
+SESSION_COOKIE_SECURE = True  # Session cookies will only be sent via HTTPS
+CSRF_COOKIE_SECURE = True  # CSRF cookies will only be sent via HTTPS
+
+# Browser security headers
+X_FRAME_OPTIONS = (
+    "DENY"  # Prevents your site from being framed (clickjacking protection)
+)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents MIME-type sniffing
+SECURE_BROWSER_XSS_FILTER = True  # Activates the browser’s XSS filtering
+
+# Note: Make sure DEBUG = False in production
