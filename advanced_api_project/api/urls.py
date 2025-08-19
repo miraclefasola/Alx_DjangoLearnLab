@@ -5,7 +5,7 @@ from .views import *
 
 router= DefaultRouter()
 router.register(r"books", BookView, basename='book_view')
-router.register(r'author', AuthorView, basename='author_view')
+router.register(r'authors', AuthorView, basename='author_view')
 urlpatterns = [path('api/', include (router.urls))
 
 ]
