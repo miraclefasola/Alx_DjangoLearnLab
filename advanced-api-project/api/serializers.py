@@ -21,3 +21,4 @@ class AuthorSerializer(serializers.ModelSerializer):
         model= Author
         fields= ["name", "books"]
 
+(many=True, read_only=True)
