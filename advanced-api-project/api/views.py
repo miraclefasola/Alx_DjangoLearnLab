@@ -2,11 +2,41 @@ from django.shortcuts import render
 from .models import Book, Author
 from rest_framework.viewsets import ModelViewSet
 from .serializers import BookSerializer, AuthorSerializer
+from rest_framework import generics
+from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.filters import SearchFilter,OrderingFilter
+from rest_framework.pagination import PageNumberPagination
+from .filters import BookCustomFilter
+from rest_framework.authentication import TokenAuthentication
 
-class BookView(ModelViewSet):
+class BookListView(generics.ListAPIView):
     queryset= Book.objects.all()
     serializer_class=BookSerializer
+    permission_classes= [IsAuthenticatedOrReadOnly]
+    filter_backends= [BookCustomFilter,SearchFilter,OrderingFilter]
+    search_fields= ('author', 'title')
+    ordering_fields= ('title')
+    pagination_class= PageNumberPagination
+    pagination_class.page_size= 2
+    authentication_classes= [TokenAuthentication]
 
-class AuthorView(ModelViewSet):
-    queryset= Author.objects.all()
-    serializer_class= AuthorSerializer
+class BookCreateView(generics.CreateAPIView):
+    queryset= Book.objects.all()
+    serializer_class= BookSerializer
+    permission_classes= [IsAdminUser]
+    authentication_classes= [TokenAuthentication]
+    
+#overwrite pk here because it easier to find books by published year rather than pk
+class BookRetrieveView(generics.RetrieveAPIView):
+    queryset= Book.objects.all()
+    serializer_class=BookSerializer
+    lookup_field= 'pk'
+    permission_classes= IsAuthenticated
+    authentication_classes= [TokenAuthentication]
+
+class BookDeleteView(generics.DestroyAPIView):
+    queryset= Book.objects.all()
+    serializer_class=BookSerializer
+    lookup_field= 'pk'
+    permission_classes= [IsAdminUser]
+    authentication_classes= [TokenAuthentication]
