@@ -47,3 +47,6 @@ class BookUpdateView(generics.UpdateAPIView):
     lookup_field= 'pk'
     permission_classes= [IsAuthenticated]
     authentication_classes= [TokenAuthentication]
+
+
+    from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
