@@ -15,9 +15,9 @@ class BookListView(generics.ListAPIView):
     permission_classes= [IsAuthenticatedOrReadOnly]
     filter_backends= [BookCustomFilter,SearchFilter,OrderingFilter]
     search_fields= ('author', 'title')
-    ordering_fields= ('title')
+    ordering_fields= ['title']
     pagination_class= PageNumberPagination
-    pagination_class.page_size= 2
+    pagination_class.size= 2
     authentication_classes= [TokenAuthentication]
 
 class BookCreateView(generics.CreateAPIView):
@@ -26,12 +26,12 @@ class BookCreateView(generics.CreateAPIView):
     permission_classes= [IsAdminUser]
     authentication_classes= [TokenAuthentication]
     
-#overwrite pk here because it easier to find books by published year rather than pk
-class BookRetrieveView(generics.RetrieveAPIView):
+
+class BookDetailView(generics.RetrieveAPIView):
     queryset= Book.objects.all()
     serializer_class=BookSerializer
     lookup_field= 'pk'
-    permission_classes= IsAuthenticated
+    permission_classes= [IsAuthenticated]
     authentication_classes= [TokenAuthentication]
 
 class BookDeleteView(generics.DestroyAPIView):
@@ -39,4 +39,11 @@ class BookDeleteView(generics.DestroyAPIView):
     serializer_class=BookSerializer
     lookup_field= 'pk'
     permission_classes= [IsAdminUser]
+    authentication_classes= [TokenAuthentication]
+
+class BookUpdateView(generics.UpdateAPIView):
+    queryset= Book.objects.all()
+    serializer_class=BookSerializer
+    lookup_field= 'pk'
+    permission_classes= [IsAuthenticated]
     authentication_classes= [TokenAuthentication]
