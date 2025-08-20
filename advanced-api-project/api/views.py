@@ -15,7 +15,7 @@ class BookListView(generics.ListAPIView):
     permission_classes= [IsAuthenticatedOrReadOnly]
     filter_backends= [filters.OrderingFilter,filters.SearchFilter,DjangoFilterBackend]
     filterset_class= BookCustomFilter
-    search_fields= ('author', 'title')
+    search_fields= ('author', 'title', 'publication_year')
     ordering_fields= ['title']
     pagination_class= PageNumberPagination
     pagination_class.page_size= 2
