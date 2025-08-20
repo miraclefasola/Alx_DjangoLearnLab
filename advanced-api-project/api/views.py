@@ -8,16 +8,17 @@ from rest_framework.filters import SearchFilter,OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from .filters import BookCustomFilter
 from rest_framework.authentication import TokenAuthentication
-
+from django_filters.rest_framework import DjangoFilterBackend
 class BookListView(generics.ListAPIView):
     queryset= Book.objects.all()
     serializer_class=BookSerializer
     permission_classes= [IsAuthenticatedOrReadOnly]
-    filter_backends= [BookCustomFilter,SearchFilter,OrderingFilter]
+    filter_backends= [BookCustomFilter,SearchFilter,DjangoFilterBackend]
+    filterset_class= BookCustomFilter
     search_fields= ('author', 'title')
     ordering_fields= ['title']
     pagination_class= PageNumberPagination
-    pagination_class.size= 2
+    pagination_class.page_size= 2
     authentication_classes= [TokenAuthentication]
 
 class BookCreateView(generics.CreateAPIView):
@@ -47,6 +48,4 @@ class BookUpdateView(generics.UpdateAPIView):
     lookup_field= 'pk'
     permission_classes= [IsAuthenticated]
     authentication_classes= [TokenAuthentication]
-
-
-    from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework
