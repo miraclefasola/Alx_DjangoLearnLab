@@ -7,4 +7,4 @@ class BookCustomFilter(django_filters.FilterSet):
         model= Book
         fields= {'title':['iexact', 'icontains'],
                   "publication_year":['exact', 'range','lt','gt'],
-                  "author":['iexact', 'icontains']}
+                  "author__name":['iexact', 'icontains']}

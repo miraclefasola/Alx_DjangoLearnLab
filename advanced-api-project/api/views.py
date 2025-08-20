@@ -7,12 +7,12 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated, IsAuthentic
 from rest_framework import filters
 from rest_framework.pagination import PageNumberPagination
 from .filters import BookCustomFilter
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 class BookListView(generics.ListAPIView):
     queryset= Book.objects.all()
     serializer_class=BookSerializer
-    permission_classes= [IsAuthenticatedOrReadOnly]
+    permission_classes= [IsAuthenticated]
     filter_backends= [filters.OrderingFilter,filters.SearchFilter,DjangoFilterBackend]
     filterset_class= BookCustomFilter
     search_fields= ('author', 'title', 'publication_year')
