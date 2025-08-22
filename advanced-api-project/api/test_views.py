@@ -101,4 +101,3 @@ class Booktestcase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Book.objects.filter(id=self.book3.id).exists())
 
-#self.client.login
