@@ -157,3 +157,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = email
 EMAIL_HOST_PASSWORD = password
 DEFAULT_FROM_EMAIL = email
+
+LOGIN_URL = "/login/"

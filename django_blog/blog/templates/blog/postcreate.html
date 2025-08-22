@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<div class="form-container">
+    <h2 class="form-title">
+        {% if object %}Edit Post{% else %}Create a New Post{% endif %}
+    </h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-submit">
+            {% if object %}Update{% else %}Publish{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

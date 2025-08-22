@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
+from .models import Post
 
 User = get_user_model()
 
@@ -18,3 +19,19 @@ class Register(UserCreationForm):
             if User.objects.filter(email=email).exists():
                 raise ValidationError("Email has an account with us")
             return email
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ["title", "content"]
+
+    def clean_title(self):
+        title = self.cleaned_data.get("title")
+        if len(title) > 200:
+            raise ValidationError("Title can only be 200 character")
+        return title
+
+    def clean_content(self):
+        content = self.cleaned_data.get("content")
+        return content.strip()

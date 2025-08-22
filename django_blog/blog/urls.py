@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
-from .views import RegisterView, ProfileView, PostListView, ProfileUpdateView
+from blog.views import *
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -41,4 +41,8 @@ urlpatterns = [
         auth_views.PasswordChangeDoneView.as_view(),
         name="password_change_done",
     ),
+    path("posts/new/", PostCreate.as_view(), name="create_post"),
+    path("posts/edit/<int:pk>/", UpdatePost.as_view(), name="post_update"),
+    path("posts/delete/<int:pk>/", DeletePost.as_view(), name="post_delete"),
+    path('posts/detail/<int:pk>/', PostDetailView.as_view(), name='post_detail')
 ]
