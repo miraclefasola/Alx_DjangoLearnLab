@@ -107,7 +107,7 @@ class CommentList(ListView):
     def get_queryset(self):
        post_id= self.kwargs.get('post_id')
        return Comment.objects.filter(post_id=post_id).order_by('-created_at')
-class CreateComment(LoginRequiredMixin,CreateView):
+class CommentCreateView(LoginRequiredMixin,CreateView):
     model= Comment
     form_class= CommentForm
     success_url='' 
@@ -119,7 +119,7 @@ class CreateComment(LoginRequiredMixin,CreateView):
         form.instance.post_id= self.kwargs['post_id']
         return super().form_valid(form)
 
-class UpdateComment(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
+class CommentUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model= Comment
     form_class= CommentForm
     template_name=''
@@ -133,7 +133,7 @@ class UpdateComment(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     def handle_no_permission(self):
         raise PermissionDenied('only authors of comment can edit')
     
-class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model= Comment
     template_name=''
     success_url= ''
@@ -144,4 +144,3 @@ class DeleteComment(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def handle_no_permission(self):
         raise PermissionDenied("Only authors of this comment can delete it")
 
-    

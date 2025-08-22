@@ -35,13 +35,15 @@ class PostForm(forms.ModelForm):
     def clean_content(self):
         content = self.cleaned_data.get("content")
         return content.strip()
-    
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
-        model= Comment
-        fields= ['content']
+        model = Comment
+        fields = ["content"]
+
     def clean_content(self):
-        content= self.cleaned_data.get('content', '').strip()
+        content = self.cleaned_data.get("content", "").strip()
         if not content:
             raise ValidationError("Comment can't be empty")
         return content
