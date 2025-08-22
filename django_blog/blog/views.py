@@ -105,7 +105,7 @@ class CommentList(ListView):
     ordering = ["-created_at"]
    
     def get_queryset(self):
-       post_id= self.kwargs.get('post_id')
+       post_id= self.kwargs.get('pk')
        return Comment.objects.filter(post_id=post_id).order_by('-created_at')
 class CommentCreateView(LoginRequiredMixin,CreateView):
     model= Comment
@@ -116,7 +116,7 @@ class CommentCreateView(LoginRequiredMixin,CreateView):
 
     def form_valid(self, form):
         form.instance.author= self.request.user
-        form.instance.post_id= self.kwargs['post_id']
+        form.instance.post_id= self.kwargs['pk']
         return super().form_valid(form)
 
 class CommentUpdateView(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
