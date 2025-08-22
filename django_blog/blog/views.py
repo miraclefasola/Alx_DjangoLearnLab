@@ -51,7 +51,7 @@ class PostListView(ListView):
 class PostCreate(LoginRequiredMixin,CreateView):
     model = Post
     form_class = PostForm
-    template_name = "blog/postcreate.html"
+    template_name = "blog/post_create.html"
     success_url = reverse_lazy("posts")
     redirect_field_name = "next"
     
@@ -65,7 +65,7 @@ class UpdatePost(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
     model = Post
     form_class = PostForm
     success_url = reverse_lazy("posts")
-    template_name = "blog/postcreate.html"
+    template_name = "blog/post_create.html"
 
     def test_func(self):
         post = self.get_object()
@@ -78,7 +78,7 @@ class UpdatePost(LoginRequiredMixin,UserPassesTestMixin,UpdateView):
 class DeletePost(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
     model = Post
     success_url = reverse_lazy("posts")
-    template_name = "blog/delete.html"
+    template_name = "blog/post_confirm_delete.html"
 
     def test_func(self):
         post= self.get_object()
