@@ -41,7 +41,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 
 class PostListView(ListView):
-    template_name = "blog/posts.html"
+    template_name = "blog/post_list.html"
     model = Post
     context_object_name = "posts"
     ordering = ["-created_at"]
@@ -96,4 +96,4 @@ class DeletePost(LoginRequiredMixin,UserPassesTestMixin,DeleteView):
 class PostDetailView( DetailView):
     model= Post
     redirect_field_name='next'
-    template_name='blog/postdetail.html'
+    template_name='blog/post_detail.html'
