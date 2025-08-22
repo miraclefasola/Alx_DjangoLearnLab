@@ -97,3 +97,5 @@ class PostDetailView( DetailView):
     model= Post
     redirect_field_name='next'
     template_name='blog/post_detail.html'
+#
+["from django.contrib.auth.decorators import login_required"]
