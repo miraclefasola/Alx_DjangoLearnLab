@@ -2,11 +2,65 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-<article>
+<article class="mb-6">
   <h1>{{ post.title }}</h1>
   <p>{{ post.content }}</p>
-  <small>By {{ post.author.username }} on {{ post.created_at|date:"M d, Y H:i" }}</small>
+  <small>
+    By {{ post.author.username }} on {{ post.created_at|date:"M d, Y H:i" }}
+  </small>
+
+  <div class="mt-4">
+    <a href="{% url 'posts' %}">Back to all posts</a>
+
+    {% if user.is_authenticated and user == post.author %}
+      | <a href="{% url 'post_update' post.pk %}">Edit Post</a>
+      | <a href="{% url 'post_delete' post.pk %}">Delete Post</a>
+    {% endif %}
+  </div>
 </article>
 
-<a href="{% url 'posts' %}">Back to all posts</a>
+<hr>
+
+<section id="comments">
+  <h2>Comments ({{ post.post_comments.count }})</h2>
+
+  {% if post.post_comments.exists %}
+    <ul class="comment-list">
+      {% for comment in post.post_comments.all %}
+        <li class="mb-3 border-b pb-2">
+          <p>{{ comment.content }}</p>
+          <small>
+            By {{ comment.author.username }} on {{ comment.created_at|date:"M d, Y H:i" }}
+          </small>
+
+          {% if user.is_authenticated and user == comment.author %}
+            <div class="mt-1">
+              <a href="{% url 'edit_comment' post.pk comment.pk %}">Edit</a> |
+              <a href="{% url 'delete_comment' post.pk comment.pk %}">Delete</a>
+            </div>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No comments yet. Be the first to comment!</p>
+  {% endif %}
+</section>
+
+<hr>
+
+<section id="add-comment" class="mt-4">
+  {% if user.is_authenticated %}
+    <h3>Add a Comment</h3>
+    <form action="{% url 'create_comment' post.pk %}" method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Post Comment</button>
+    </form>
+  {% else %}
+    <p>
+      <a href="{% url 'login' %}">Log in</a> to add a comment.
+    </p>
+  {% endif %}
+</section>
 {% endblock %}

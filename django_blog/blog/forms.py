@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-from .models import Post
+from .models import Post, Comment
 
 User = get_user_model()
 
@@ -35,3 +35,13 @@ class PostForm(forms.ModelForm):
     def clean_content(self):
         content = self.cleaned_data.get("content")
         return content.strip()
+    
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model= Comment
+        fields= ['content']
+    def clean_content(self):
+        content= self.cleaned_data.get('content', '').strip()
+        if not content:
+            raise ValidationError("Comment can't be empty")
+        return content
