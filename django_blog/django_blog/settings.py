@@ -149,7 +149,7 @@ load_dotenv()
 email = os.environ.get("smtp_email")
 password = os.environ.get("smtp_password")
 
-#SMTP configuratioon for password rest functionality
+# SMTP configuratioon for password rest functionality
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
