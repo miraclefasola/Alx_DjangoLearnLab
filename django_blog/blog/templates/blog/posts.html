@@ -1,0 +1,10 @@
+<h1>Blog Posts</h1>
+
+<ul>
+    {% for post in posts %}
+    <li>
+        <a href="{% url 'posts' %}">{{ post.title }}</a>
+        <p>{{ post.author }} - {{ post.published_date }}</p>
+    </li>
+    {% endfor %}
+</ul>

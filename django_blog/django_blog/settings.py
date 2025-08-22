@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "blog"
+    "blog",
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ ROOT_URLCONF = "django_blog.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -83,9 +83,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-user=os.environ.get("DB_USER")
-password=os.environ.get("DB_PASSWORD")
-host=os.environ.get("DB_HOST")
+user = os.environ.get("DB_USER")
+password = os.environ.get("DB_PASSWORD")
+host = os.environ.get("DB_HOST")
 
 
 DATABASES = {
@@ -136,10 +136,24 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_REDIRECT_URL = "home"
+# smtp config for password reset
+load_dotenv()
+email = os.environ.get("smtp_email")
+password = os.environ.get("smtp_password")
+
+#SMTP configuratioon for password rest functionality
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = email
+EMAIL_HOST_PASSWORD = password
+DEFAULT_FROM_EMAIL = email
