@@ -18,7 +18,6 @@ from taggit.models import Tag
 from django.shortcuts import get_object_or_404
 
 
-
 class RegisterView(CreateView):
     form_class = Register
     template_name = "blog/register.html"
@@ -51,8 +50,8 @@ class PostListView(ListView):
     ordering = ["-published_date"]
 
     def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
-        context['tag_list']= Tag.objects.all()
+        context = super().get_context_data(**kwargs)
+        context["tag_list"] = Tag.objects.all()
         return context
 
 
@@ -188,41 +187,47 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def handle_no_permission(self):
         raise PermissionDenied("Only authors of this comment can delete it")
 
+
 class TagView(ListView):
-    model= Post
-    template_name='blog/post_by_tag.html'
-    context_object_name= 'posts'
+    model = Post
+    template_name = "blog/post_by_tag.html"
+    context_object_name = "posts"
 
     def get_queryset(self):
-        slug= self.kwargs.get("tag_slug")
-        self.tag= get_object_or_404(Tag, slug=slug)
-        queryset= Post.objects.filter(tags__slug = slug).distinct()
+        slug = self.kwargs.get("tag_slug")
+        self.tag = get_object_or_404(Tag, slug=slug)
+        queryset = Post.objects.filter(tags__slug=slug).distinct()
         return queryset
 
     def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
-        context['tag']= self.tag
+        context = super().get_context_data(**kwargs)
+        context["tag"] = self.tag
         return context
-    
+
+
 from django.db.models import Q
 
+
 class PostSerachList(ListView):
-    model= Post
-    template_name='blog/search.html'
-    context_object_name= 'posts'
+    model = Post
+    template_name = "blog/search.html"
+    context_object_name = "posts"
 
     def get_queryset(self):
-        query= self.request.GET.get('q','').strip()
+        query = self.request.GET.get("q", "").strip()
         if query:
-            q= (Q(title__icontains=query)|Q(content__icontains=query)|Q(tags__name__icontains=query))
-                
-        
+            q = (
+                Q(title__icontains=query)
+                | Q(content__icontains=query)
+                | Q(tags__name__icontains=query)
+            )
+
             # if query.isdigit():
             #     q |= Q(published_date__year__exact=int(query))
             return Post.objects.filter(q).distinct()
         return Post.objects.none()
+
     def get_context_data(self, **kwargs):
-        context= super().get_context_data(**kwargs)
-        context['query'] = self.request.GET.get('q','')
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.request.GET.get("q", "")
         return context
-    
