@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "blog",
+    "taggit",
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,4 @@ EMAIL_HOST_PASSWORD = password
 DEFAULT_FROM_EMAIL = email
 
 LOGIN_URL = "/login/"
+TAGGIT_CASE_INSENSITIVE = True  # make tags case insensitive

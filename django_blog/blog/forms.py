@@ -22,9 +22,10 @@ class Register(UserCreationForm):
 
 
 class PostForm(forms.ModelForm):
+
     class Meta:
         model = Post
-        fields = ["title", "content"]
+        fields = ["title", "content","tags"]
 
     def clean_title(self):
         title = self.cleaned_data.get("title")
@@ -32,9 +33,9 @@ class PostForm(forms.ModelForm):
             raise ValidationError("Title can only be 200 character")
         return title
 
-    def clean_content(self):
-        content = self.cleaned_data.get("content")
-        return content.strip()
+    # def clean_content(self):
+    #     content = self.cleaned_data.get("content")
+    #     return content.strip()
 
 
 class CommentForm(forms.ModelForm):

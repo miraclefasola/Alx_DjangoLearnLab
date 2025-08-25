@@ -41,16 +41,16 @@ urlpatterns = [
         auth_views.PasswordChangeDoneView.as_view(),
         name="password_change_done",
     ),
-    path("post/new/", PostCreate.as_view(), name="create_post"),
+    path("post/new/", PostCreate.as_view(), name="post_create"),
     path("post/<int:pk>/update/", UpdatePost.as_view(), name="post_update"),
     path("post/<int:pk>/delete/", DeletePost.as_view(), name="post_delete"),
     path("post/<int:pk>/detail/", PostDetailView.as_view(), name="post_detail"),
-    path("posts/<int:post_id>/comments/", CommentList.as_view(), name="list_comment"),
-    path(
-        "post/<int:pk>/comments/new/",
-        CommentCreateView.as_view(),
-        name="create_comment",
-    ),
+    # path("posts/<int:post_id>/comments/", CommentList.as_view(), name="list_comment"),
+    # path(
+    #     "post/<int:pk>/comments/new/",
+    #     CommentCreateView.as_view(),
+    #     name="create_comment",
+    # ),
     path(
         "comment/<int:pk>/update/",
         CommentUpdateView.as_view(),
@@ -61,4 +61,6 @@ urlpatterns = [
         CommentDeleteView.as_view(),
         name="delete_comment",
     ),
+    path('posts/tag/<slug:tag_slug>/',TagView.as_view(), name='tag_view'),
+    path('posts/search/', PostSerachList.as_view(), name= 'search_list')
 ]

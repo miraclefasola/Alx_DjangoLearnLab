@@ -11,10 +11,31 @@
             + New Post
         </a>
     </div>
+    <div>
+        <form action="{% url 'search_list' %}", method="get">
+            <input type="text", name="q", placeholder="Find a post", aria-label="Search post">
+            <button type="submit">Search</button>
 
+
+        </form>
+
+
+
+
+
+
+
+
+
+    </div>
     <!-- Posts List -->
+     <div>Tags:{% for tags in tag_list %} 
+        <a href="{% url "tag_view" tag_slug=tags.slug %}">{{tags.name}}</a>
+        
+        {%endfor%}</div>
     {% if object_list %}
         <div class="space-y-6">
+<ul>
             {% for post in object_list %}
                 <div class="bg-white p-6 rounded-xl shadow-md">
                     <h2 class="text-2xl font-semibold">{{ post.title }}</h2>
@@ -40,4 +61,5 @@
         <p class="text-gray-500">No posts yet. <a href="{% url 'post_create' %}" class="text-blue-600 hover:underline">Create one?</a></p>
     {% endif %}
 </div>
+</ul>
 {% endblock %}
