@@ -188,7 +188,7 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         raise PermissionDenied("Only authors of this comment can delete it")
 
 
-class PostByTagListViewTagView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = "blog/post_by_tag.html"
     context_object_name = "posts"
