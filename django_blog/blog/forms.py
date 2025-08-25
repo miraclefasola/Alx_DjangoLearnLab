@@ -27,7 +27,7 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["title", "content", "tags"]
-        widget= {'tags':TagWidget()}
+        widgets= {'tags':TagWidget()}
 
     def clean_title(self):
         title = " ".join(self.cleaned_data.get("title").split())
