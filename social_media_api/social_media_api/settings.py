@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "django_filters",
+    "posts"
 ]
 
 MIDDLEWARE = [
@@ -148,4 +149,4 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-LOGIN_REDIRECT_URL='profile'
+LOGIN_REDIRECT_URL = "profile"

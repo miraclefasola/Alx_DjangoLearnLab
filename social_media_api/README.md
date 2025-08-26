@@ -81,3 +81,231 @@ reset/<uidb64>/<token>/ → Confirm reset
 reset_password_complete/ → Done
 
 password_change/ → Change password while logged in
+
+
+API Documentation: Posts & Comments
+
+Base URL: /api/
+Authentication is required for all operations via Token Authentication:
+
+Authorization: Token <your_token_here>
+
+Posts Endpoint (/api/post/)
+1️⃣ List Posts
+
+Method: GET
+Description: Retrieve all posts (paginated, 3 per page).
+
+Request:
+
+GET /api/post/
+Authorization: Token your_token_here
+
+
+Response:
+
+{
+  "count": 12,
+  "next": "http://localhost:8000/api/post/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "author": "john_doe",
+      "title": "My First Post",
+      "content": "This is the content of the post.",
+      "created_at": "2025-08-26T16:00:00Z",
+      "updated_at": "2025-08-26T16:05:00Z"
+    }
+  ]
+}
+
+2️⃣ Retrieve Post
+
+Method: GET
+Description: Get details of a single post by ID.
+
+Request:
+
+GET /api/post/1/
+Authorization: Token your_token_here
+
+
+Response:
+
+{
+  "author": "john_doe",
+  "title": "My First Post",
+  "content": "This is the content of the post.",
+  "created_at": "2025-08-26T16:00:00Z",
+  "updated_at": "2025-08-26T16:05:00Z"
+}
+
+3️⃣ Create Post
+
+Method: POST
+Description: Create a new post. author is automatically set to the logged-in user.
+
+Request:
+
+POST /api/post/
+Authorization: Token your_token_here
+Content-Type: application/json
+
+{
+  "title": "New Post Title",
+  "content": "Post content goes here."
+}
+
+
+Response:
+
+{
+  "author": "john_doe",
+  "title": "New Post Title",
+  "content": "Post content goes here.",
+  "created_at": "2025-08-26T17:00:00Z",
+  "updated_at": "2025-08-26T17:00:00Z"
+}
+
+
+⚠ Only the author can update or delete their post.
+
+4️⃣ Update Post
+
+Method: PUT or PATCH
+Description: Update an existing post (author-only).
+
+Request:
+
+PUT /api/post/1/
+Authorization: Token your_token_here
+Content-Type: application/json
+
+{
+  "title": "Updated Title",
+  "content": "Updated content."
+}
+
+
+Response:
+
+{
+  "author": "john_doe",
+  "title": "Updated Title",
+  "content": "Updated content.",
+  "created_at": "2025-08-26T16:00:00Z",
+  "updated_at": "2025-08-26T17:15:00Z"
+}
+
+5️⃣ Delete Post
+
+Method: DELETE
+Description: Delete a post (author-only).
+
+Request:
+
+DELETE /api/post/1/
+Authorization: Token your_token_here
+
+
+Response:
+
+204 No Content
+
+Comments Endpoint (/api/comment/)
+1️⃣ List Comments
+
+Method: GET
+Description: List all comments (paginated, 5 per page). Filter by post with query parameter /api/comment/?post=1.
+
+Request:
+
+GET /api/comment/
+Authorization: Token your_token_here
+
+
+Response:
+
+{
+  "count": 7,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "author": "jane_doe",
+      "post": 1,
+      "content": "Nice post!",
+      "created_at": "2025-08-26T16:10:00Z",
+      "updated_at": "2025-08-26T16:10:00Z"
+    }
+  ]
+}
+
+2️⃣ Create Comment
+
+Method: POST
+Description: Add a comment to a post. author is automatically set to the logged-in user.
+
+Request:
+
+POST /api/comment/
+Authorization: Token your_token_here
+Content-Type: application/json
+
+{
+  "post": 1,
+  "content": "This is a comment."
+}
+
+
+Response:
+
+{
+  "author": "jane_doe",
+  "post": 1,
+  "content": "This is a comment.",
+  "created_at": "2025-08-26T17:05:00Z",
+  "updated_at": "2025-08-26T17:05:00Z"
+}
+
+
+⚠ Only the comment author can update or delete their comment.
+
+3️⃣ Update Comment
+
+Method: PUT or PATCH
+
+Request:
+
+PATCH /api/comment/1/
+Authorization: Token your_token_here
+Content-Type: application/json
+
+{
+  "content": "Updated comment content."
+}
+
+
+Response:
+
+{
+  "author": "jane_doe",
+  "post": 1,
+  "content": "Updated comment content.",
+  "created_at": "2025-08-26T16:10:00Z",
+  "updated_at": "2025-08-26T17:10:00Z"
+}
+
+4️⃣ Delete Comment
+
+Method: DELETE
+
+Request:
+
+DELETE /api/comment/1/
+Authorization: Token your_token_here
+
+
+Response:
+
+204 No Content

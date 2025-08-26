@@ -7,11 +7,13 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("api/login", obtain_auth_token, name="api_token_auth"),
-    path("login/", LoginView.as_view(template_name='accounts/login.html'), name="login"),
+    path(
+        "login/", LoginView.as_view(template_name="accounts/login.html"), name="login"
+    ),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("register/", Register.as_view(), name="register"),
-    path("profile/",ProfileView.as_view() ,name='profile'),
-    path('pofile_update/<int:pk>/', ProfileUpdate.as_view(), name='profile_update'),
+    path("profile/", ProfileView.as_view(), name="profile"),
+    path("pofile_update/<int:pk>/", ProfileUpdate.as_view(), name="profile_update"),
     path(
         "reset_password/", auth_views.PasswordResetView.as_view(), name="reset_password"
     ),
@@ -40,5 +42,5 @@ urlpatterns = [
         auth_views.PasswordChangeDoneView.as_view(),
         name="password_change_done",
     ),
-    path("api/register/", RegisterAPIView.as_view(), name="api-register")
+    path("api/register/", RegisterAPIView.as_view(), name="api-register"),
 ]
