@@ -1,0 +1,11 @@
+<div>
+    {% if user.is_authenticated %}
+        <h1>Welcome {{ user.first_name }}</h1>
+
+        <p>
+            Followers: {{ follower_count|default:"0" }}
+        </p>
+
+        <small><a href="{% url 'profile_update' user.pk %}">Update your account here</a></small>
+    {% endif %}
+</div>

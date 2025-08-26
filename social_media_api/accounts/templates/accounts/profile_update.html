@@ -1,0 +1,63 @@
+<div class="profile-update-container">
+    {% if user.is_authenticated %}
+        <h1>Update your profile, {{ user.first_name }}</h1>
+
+        <form action="{% url 'profile_update' user.pk %}" method="post" class="profile-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-submit">Update</button>
+
+        </form>
+        <small><a href="{% url 'password_change'%}">Change Password</a></small>
+    {% endif %}
+</div>
+
+<style>
+.profile-update-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 25px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", sans-serif;
+}
+
+.profile-update-container h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.profile-form p {
+    margin-bottom: 15px;
+}
+
+.profile-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+}
+
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="password"],
+.profile-form textarea,
+.profile-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.profile-form input:focus,
+.profile-form textarea:focus,
+.profile-form select:focus {
+    border-color: #007bff;
+}
+
+.btn-sub
