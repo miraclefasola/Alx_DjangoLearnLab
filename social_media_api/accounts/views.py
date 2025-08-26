@@ -51,3 +51,6 @@ class RegisterAPIView(CreateAPIView):
         data['token']= token.key
 
         return Response(data, status=201)
+    
+
+    
