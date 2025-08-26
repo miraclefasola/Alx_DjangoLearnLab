@@ -22,5 +22,3 @@ class UserSerializer(serializers.ModelSerializer):
         # create token
         Token.objects.create(user=user)
         return user
-
-   
