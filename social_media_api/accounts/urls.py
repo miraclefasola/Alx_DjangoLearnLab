@@ -6,7 +6,7 @@ from accounts.views import *
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path("api-token-auth/", obtain_auth_token, name="api_token_auth"),
+    path("api/login", obtain_auth_token, name="api_token_auth"),
     path("login/", LoginView.as_view(template_name='accounts/login.html'), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
     path("register/", Register.as_view(), name="register"),
@@ -40,4 +40,5 @@ urlpatterns = [
         auth_views.PasswordChangeDoneView.as_view(),
         name="password_change_done",
     ),
+    path("api/register/", RegisterAPIView.as_view(), name="api-register")
 ]

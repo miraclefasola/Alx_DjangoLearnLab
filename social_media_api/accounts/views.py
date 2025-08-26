@@ -3,7 +3,8 @@ from accounts.forms import *
 from django.views.generic import CreateView, TemplateView, ListView,UpdateView
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
-
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 User = get_user_model()
 
 
@@ -33,4 +34,20 @@ class ProfileUpdate(UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
+from rest_framework.generics import CreateAPIView
+from accounts.serializers import *
+from rest_framework.permissions import AllowAny
+class RegisterAPIView(CreateAPIView):
+    queryset= User.objects.all()
+    serializer_class= UserSerializer
+    permission_classes=[AllowAny]
+    
+    def create(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user=serializer.save()
+        token =Token.objects.get(user=user)
+        data= serializer.data
+        data['token']= token.key
 
+        return Response(data, status=201)
