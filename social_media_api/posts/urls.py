@@ -9,4 +9,6 @@ router = DefaultRouter()
 router.register(r"post", PostViewSet, basename="post")
 router.register(r"comment", CommentViewSet, basename="comment")
 
-urlpatterns = [path("", include(router.urls))]
+urlpatterns = [path("", include(router.urls)),
+               path('feed/', FeedView.as_view(), name='timeline')
+               ]

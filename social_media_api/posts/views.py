@@ -9,6 +9,7 @@ from django.core.exceptions import PermissionDenied
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import filters, DjangoFilterBackend
 from rest_framework import filters
+from rest_framework.generics import ListAPIView
 
 
 class PostViewSet(ModelViewSet):
@@ -60,4 +61,20 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-#viewsets.ModelViewSet
+class FeedView(ListAPIView):
+    serializer_class= PostSerializer
+    queryset= Post.objects.all()
+    authentication_classes=[IsAuthenticated]
+    filter_backends = [
+        filters.OrderingFilter,
+        filters.SearchFilter,
+        DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_at"]
+    ordering = ["-created_at"] 
+
+    def get_queryset(self):
+        current_user= self.request.user
+        following_list= current_user.following.all()
+        feed_queryset= Post.objects.filter(author__in=following_list)
+        return feed_queryset

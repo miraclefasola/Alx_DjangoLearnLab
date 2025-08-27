@@ -9,8 +9,9 @@ class CustomUser(AbstractUser):
         default="default.jpeg", upload_to="profile_picture", null=True, blank=True
     )
     followers = models.ManyToManyField(
-        "self", symmetrical=False, related_name="following", blank=True
+        "self", symmetrical=False, related_name="user_followers", blank=True
     )
+    following= models.ManyToManyField("self", symmetrical=False, related_name='user_following')
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "username"]
 

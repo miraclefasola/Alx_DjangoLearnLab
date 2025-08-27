@@ -43,4 +43,7 @@ urlpatterns = [
         name="password_change_done",
     ),
     path("api/register/", RegisterAPIView.as_view(), name="api-register"),
+    path('users/', UsersView.as_view({'get':'list'}), name='users_view'),
+    path('follow/<int:user_id>/', UsersView.as_view({'post':'follow_user'}), name='follow'),
+    path('unfollow/<int:user_id>/', UsersView.as_view({'post':'unfollow_user'}), name= 'unfollow')
 ]

@@ -1,311 +1,84 @@
-User Authentication System (Django)
-1. Setup
-
-Clone the repository and create a virtual environment:
-
+📘 Social Media API – README
+🔹 Setup
 python -m venv venv
 source venv/bin/activate   # Linux/Mac
 venv\Scripts\activate      # Windows
-
-
-Install dependencies:
-
 pip install -r requirements.txt
-
-
-Apply migrations:
-
 python manage.py makemigrations
 python manage.py migrate
-
-
-Run server:
-
 python manage.py runserver
 
-2. User Model
+🔹 Authentication
 
-We use a custom user model (CustomUser) that extends Django’s AbstractUser.
+Custom User model (email as USERNAME_FIELD).
 
-email is unique and used as the USERNAME_FIELD for login.
+Token authentication (/api-token-auth/).
 
-bio, profile_picture, and followers fields extend functionality.
+Login supported with username or email.
 
-followers is a self-referential ManyToManyField with symmetrical=False, so following is one-way like Twitter.
+🔹 Users & Follows
 
-3. Registration & Authentication
-Register
+GET /users/ → List active users.
 
-We use a RegisterForm (extends UserCreationForm) and a Register view (CreateView) to handle user signup.
+POST /follow/<user_id>/ → Follow user.
 
-After successful signup, users are redirected to the login page.
+POST /unfollow/<user_id>/ → Unfollow user.
 
-Validation is built-in (unique email, username).
+🔑 Rules:
 
-Login & Logout
+Cannot follow/unfollow yourself.
 
-Uses Django’s built-in LoginView and LogoutView.
+Cannot follow twice / unfollow if not following.
 
-Templates: accounts/login.html.
+🔹 Feed
 
-Token Authentication
+GET /feed/ → Posts from followed users, ordered by newest (created_at).
 
-A Token is created automatically for each new user using a signal (post_save).
+🔹 Posts
 
-Endpoint: /api-token-auth/ (works with Postman using email/username + password).
+GET /api/post/ → List all posts (paginated).
 
-4. Custom Authentication Backend
+POST /api/post/ → Create post (author = current user).
 
-We support login via username OR email.
+GET/PUT/PATCH/DELETE /api/post/<id>/ → Manage post (author-only).
 
-5. Profile Management
-Profile View
+Nested comments included.
 
-Displays the logged-in user and their follower count.
+🔹 Comments
 
-Profile Update
+GET /api/comment/?post=<id> → List comments for post (paginated).
 
-Users can update their first name, last name, email, bio, and profile picture.
-Only the logged-in user can edit their own profile.
+POST /api/comment/ → Add comment (author = current user).
 
-6. Password Management
+PUT/PATCH/DELETE /api/comment/<id>/ → Manage comment (author-only).
 
-We use Django’s built-in views:
+🔹 Serializers
+PostSerializer
+class PostSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source="author.username")
+    comment = CommentSerializer(many=True, read_only=True)
 
-reset_password/ → Request reset
+    class Meta:
+        model = Post
+        fields = ["author", "title", "content", "created_at", "updated_at", "comment"]
 
-reset_password_sent/ → Confirmation sent
+    def validate(self, validated_data):
+        if len(validated_data["title"]) > 200:
+            raise serializers.ValidationError({"title": "title can't be more than 200 characters"})
+        return validated_data
 
-reset/<uidb64>/<token>/ → Confirm reset
+CommentSerializer
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.ReadOnlyField(source="author.username")
 
-reset_password_complete/ → Done
+    class Meta:
+        model = Comment
+        fields = ["author", "content", "created_at", "updated_at"]
 
-password_change/ → Change password while logged in
+🔹 Permissions
 
+All endpoints require IsAuthenticated.
 
-API Documentation: Posts & Comments
+Users can only update/delete their own posts & comments.
 
-Base URL: /api/
-Authentication is required for all operations via Token Authentication:
-
-Authorization: Token <your_token_here>
-
-Posts Endpoint (/api/post/)
-1️⃣ List Posts
-
-Method: GET
-Description: Retrieve all posts (paginated, 3 per page).
-
-Request:
-
-GET /api/post/
-Authorization: Token your_token_here
-
-
-Response:
-
-{
-  "count": 12,
-  "next": "http://localhost:8000/api/post/?page=2",
-  "previous": null,
-  "results": [
-    {
-      "author": "john_doe",
-      "title": "My First Post",
-      "content": "This is the content of the post.",
-      "created_at": "2025-08-26T16:00:00Z",
-      "updated_at": "2025-08-26T16:05:00Z"
-    }
-  ]
-}
-
-2️⃣ Retrieve Post
-
-Method: GET
-Description: Get details of a single post by ID.
-
-Request:
-
-GET /api/post/1/
-Authorization: Token your_token_here
-
-
-Response:
-
-{
-  "author": "john_doe",
-  "title": "My First Post",
-  "content": "This is the content of the post.",
-  "created_at": "2025-08-26T16:00:00Z",
-  "updated_at": "2025-08-26T16:05:00Z"
-}
-
-3️⃣ Create Post
-
-Method: POST
-Description: Create a new post. author is automatically set to the logged-in user.
-
-Request:
-
-POST /api/post/
-Authorization: Token your_token_here
-Content-Type: application/json
-
-{
-  "title": "New Post Title",
-  "content": "Post content goes here."
-}
-
-
-Response:
-
-{
-  "author": "john_doe",
-  "title": "New Post Title",
-  "content": "Post content goes here.",
-  "created_at": "2025-08-26T17:00:00Z",
-  "updated_at": "2025-08-26T17:00:00Z"
-}
-
-
-⚠ Only the author can update or delete their post.
-
-4️⃣ Update Post
-
-Method: PUT or PATCH
-Description: Update an existing post (author-only).
-
-Request:
-
-PUT /api/post/1/
-Authorization: Token your_token_here
-Content-Type: application/json
-
-{
-  "title": "Updated Title",
-  "content": "Updated content."
-}
-
-
-Response:
-
-{
-  "author": "john_doe",
-  "title": "Updated Title",
-  "content": "Updated content.",
-  "created_at": "2025-08-26T16:00:00Z",
-  "updated_at": "2025-08-26T17:15:00Z"
-}
-
-5️⃣ Delete Post
-
-Method: DELETE
-Description: Delete a post (author-only).
-
-Request:
-
-DELETE /api/post/1/
-Authorization: Token your_token_here
-
-
-Response:
-
-204 No Content
-
-Comments Endpoint (/api/comment/)
-1️⃣ List Comments
-
-Method: GET
-Description: List all comments (paginated, 5 per page). Filter by post with query parameter /api/comment/?post=1.
-
-Request:
-
-GET /api/comment/
-Authorization: Token your_token_here
-
-
-Response:
-
-{
-  "count": 7,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "author": "jane_doe",
-      "post": 1,
-      "content": "Nice post!",
-      "created_at": "2025-08-26T16:10:00Z",
-      "updated_at": "2025-08-26T16:10:00Z"
-    }
-  ]
-}
-
-2️⃣ Create Comment
-
-Method: POST
-Description: Add a comment to a post. author is automatically set to the logged-in user.
-
-Request:
-
-POST /api/comment/
-Authorization: Token your_token_here
-Content-Type: application/json
-
-{
-  "post": 1,
-  "content": "This is a comment."
-}
-
-
-Response:
-
-{
-  "author": "jane_doe",
-  "post": 1,
-  "content": "This is a comment.",
-  "created_at": "2025-08-26T17:05:00Z",
-  "updated_at": "2025-08-26T17:05:00Z"
-}
-
-
-⚠ Only the comment author can update or delete their comment.
-
-3️⃣ Update Comment
-
-Method: PUT or PATCH
-
-Request:
-
-PATCH /api/comment/1/
-Authorization: Token your_token_here
-Content-Type: application/json
-
-{
-  "content": "Updated comment content."
-}
-
-
-Response:
-
-{
-  "author": "jane_doe",
-  "post": 1,
-  "content": "Updated comment content.",
-  "created_at": "2025-08-26T16:10:00Z",
-  "updated_at": "2025-08-26T17:10:00Z"
-}
-
-4️⃣ Delete Comment
-
-Method: DELETE
-
-Request:
-
-DELETE /api/comment/1/
-Authorization: Token your_token_here
-
-
-Response:
-
-204 No Content
+Follow/unfollow limited to own following list.

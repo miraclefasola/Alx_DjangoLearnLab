@@ -41,7 +41,7 @@ class ProfileUpdate(UpdateView):
 
 from rest_framework.generics import CreateAPIView
 from accounts.serializers import *
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 class RegisterAPIView(CreateAPIView):
@@ -58,3 +58,41 @@ class RegisterAPIView(CreateAPIView):
         data["token"] = token.key
 
         return Response(data, status=201)
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.permissions import SAFE_METHODS
+from django.core.exceptions import PermissionDenied
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+
+#List all users
+class UsersView(ReadOnlyModelViewSet):
+    serializer_class= UserSerializer
+    queryset= User.objects.filter(is_active=True)
+    permission_classes=[IsAuthenticated]
+
+#    @action(detail=True, methods=['POST'])  commenting it out because actin only works for routers and task is asking us to define custom urls
+    def follow_user(self, request, user_id=None):
+        user_to_follow =get_object_or_404(User, id=user_id)
+        current_user = self.request.user
+        if user_to_follow == self.request.user:
+            return Response({'detail':'you cannot follow yourself'})
+        elif current_user.following.filter(pk=user_to_follow.pk).exists():
+            return Response({'detail':'already following this user'})
+        else:
+            current_user.following.add(user_to_follow)
+            return Response({'detail':f"you've just followed {user_to_follow.username}"})
+#    @action(detail=True, methods=["POST"])
+    def unfollow_user(self, request, user_id=None):
+        user_to_unfollow= get_object_or_404(User, id=user_id)
+        current_user = self.request.user
+        if not current_user.following.filter(pk=user_to_unfollow.pk).exists():
+            return Response({'detail':'Can only unfollow users you are follwing'})
+        elif user_to_unfollow == current_user:
+            return Response({'detail': "You cannot unfollow yourself"})
+        else:
+            current_user.following.remove(user_to_unfollow)
+            return Response({'detail':f"you've just unfollowed {user_to_unfollow.username}"})
+        
+
+
