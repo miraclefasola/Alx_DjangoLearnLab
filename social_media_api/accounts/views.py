@@ -96,3 +96,4 @@ class UsersView(ReadOnlyModelViewSet):
         
 
 
+#generics.GenericAPIView", "permissions.IsAuthenticated", "CustomUser.objects.all()"]
