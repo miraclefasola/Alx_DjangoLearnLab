@@ -76,5 +76,8 @@ class FeedView(ListAPIView):
     def get_queryset(self):
         current_user= self.request.user
         following_list= current_user.following.all()
-        feed_queryset= Post.objects.filter(author__in=following_list)
+        feed_queryset= Post.objects.filter(author__in=following_list).order_by('-created_at')
         return feed_queryset
+    
+    
+#posts/views.py doesn't contain: ["Post.objects.filter(author__in=following_users).order_by", "permissions.IsAuthenticated"]
