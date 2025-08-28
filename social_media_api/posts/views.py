@@ -10,8 +10,8 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import filters, DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.generics import ListAPIView
-
-
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 class PostViewSet(ModelViewSet):
     model = Post
     serializer_class = PostSerializer
@@ -124,17 +124,26 @@ class LikeAPIVIEW(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        target = get_object_or_404(Post, pk=pk)
+        post = get_object_or_404(Post, pk=pk)
         actor = request.user
 
-        if Like.objects.filter(user=actor, post=target).exists():
+        if Like.objects.filter(user=actor, post=post).exists():
             return Response({"detail": "You have already liked this post"})
-        Like.objects.create(user=actor, post=target)
+        Like.objects.create(user=actor, post=post)
 
-        if target.author == actor:
+        if post.author == actor:
             return Response({"detail": "You have just liked your own post"})
-        elif target.author != actor:
-            return Response({"detail": f"You have just liked {target.author}'s post"})
+        elif post.author != actor:
+            
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target_content_type=ContentType.objects.get_for_model(post),
+                target_object_id=post.id,
+            )
+
+            return Response({"detail": f"You have just liked {post.author}'s post"})
         else:
             return Response({"detail": "error"})
 
@@ -157,3 +166,5 @@ class UnlikeAPIVIEW(APIView):
             return Response({"detail": f"You have just unliked {target.author}'s post"})
         else:
             return Response({"detail": "error"})
+
+#  ["permissions.IsAuthenticated", "generics.get_object_or_404(Post, pk=pk)", "Like.objects.get_or_create(user=request.user, post=post)", "Notification.objects.create"]

@@ -66,7 +66,8 @@ from django.core.exceptions import PermissionDenied
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 from rest_framework.decorators import action
 from django.shortcuts import get_object_or_404
-
+from django.contrib.contenttypes.models import ContentType
+from notifications.models import Notification
 
 # List all users
 class UsersView(ReadOnlyModelViewSet):
@@ -84,6 +85,13 @@ class UsersView(ReadOnlyModelViewSet):
             return Response({"detail": "already following this user"})
         else:
             current_user.following.add(user_to_follow)
+            Notification.objects.create(
+                recipient=user_to_follow,
+                actor=request.user,
+                verb="Followed",
+                target_content_type=ContentType.objects.get_for_model(user_to_follow),
+                target_object_id=user_to_follow.id,
+            )
             return Response(
                 {"detail": f"you've just followed {user_to_follow.username}"}
             )
