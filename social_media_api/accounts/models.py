@@ -11,7 +11,9 @@ class CustomUser(AbstractUser):
     followers = models.ManyToManyField(
         "self", symmetrical=False, related_name="user_followers", blank=True
     )
-    following= models.ManyToManyField("self", symmetrical=False, related_name='user_following')
+    following = models.ManyToManyField(
+        "self", symmetrical=False, related_name="user_following"
+    )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "username"]
 

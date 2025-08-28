@@ -9,6 +9,9 @@ router = DefaultRouter()
 router.register(r"post", PostViewSet, basename="post")
 router.register(r"comment", CommentViewSet, basename="comment")
 
-urlpatterns = [path("", include(router.urls)),
-               path('feed/', FeedView.as_view(), name='timeline')
-               ]
+urlpatterns = [
+    path("", include(router.urls)),
+    path("feed/", FeedView.as_view(), name="timeline"),
+    path("posts/<int:pk>/like/", LikeAPIVIEW.as_view(), name="like_post"),
+    path("posts/<int:pk>/unlike/", UnlikeAPIVIEW.as_view(), name="unlike_post"),
+]

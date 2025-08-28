@@ -61,23 +61,99 @@ class CommentViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
+
 class FeedView(ListAPIView):
-    serializer_class= PostSerializer
-    queryset= Post.objects.all()
-    authentication_classes=[IsAuthenticated]
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    authentication_classes = [IsAuthenticated]
     filter_backends = [
         filters.OrderingFilter,
         filters.SearchFilter,
         DjangoFilterBackend,
     ]
     ordering_fields = ["created_at"]
-    ordering = ["-created_at"] 
+    ordering = ["-created_at"]
 
     def get_queryset(self):
-        current_user= self.request.user
-        following_list= current_user.following.all()
-        feed_queryset= Post.objects.filter(author__in=following_list).order_by('-created_at')
+        current_user = self.request.user
+        following_list = current_user.following.all()
+        feed_queryset = Post.objects.filter(author__in=following_list).order_by(
+            "-created_at"
+        )
         return feed_queryset
-    
-    
-#posts/views.py doesn't contain: ["Post.objects.filter(author__in=following_users).order_by", "permissions.IsAuthenticated"]
+
+
+from rest_framework.views import APIView
+from rest_framework.permissions import SAFE_METHODS
+from django.core.exceptions import PermissionDenied
+from rest_framework.decorators import action
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+
+
+class LikeView(ModelViewSet):
+    serializer_class = LikeSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=True, methods=["post"])
+    def like(self):
+        actor = self.request.user
+        target = self.get_object()
+        if Like.objects.filter(user=actor, post=target).exists():
+            return Response({"detail": "You have already liked this post"})
+        Like.objects.create(user=actor, post=target)
+
+        # response formatting
+        if target.author == actor:
+            return Response({"detail": "You have just liked your own post"})
+        return Response({"detail": f"You have just liked {target.author}'s post"})
+
+    @action(detail=True, methods=["post"])
+    def Unlike(self):
+        actor = self.request.user
+        target = self.get_object()
+        if not Like.objects.filter(user=actor, post=target).exists():
+            return Response({"detail": "you haven't liked this post"})
+        Like.objects.filter(user=actor, post=target).delete()
+        if target.author == actor:
+            return Response({"detail": "You have unliked your own post"})
+        return Response({"detail": f"You have unliked {target.author}'s post"})
+
+
+class LikeAPIVIEW(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        target = get_object_or_404(Post, pk=pk)
+        actor = request.user
+
+        if Like.objects.filter(user=actor, post=target).exists():
+            return Response({"detail": "You have already liked this post"})
+        Like.objects.create(user=actor, post=target)
+
+        if target.author == actor:
+            return Response({"detail": "You have just liked your own post"})
+        elif target.author != actor:
+            return Response({"detail": f"You have just liked {target.author}'s post"})
+        else:
+            return Response({"detail": "error"})
+
+
+class UnlikeAPIVIEW(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        actor = request.user
+        target = get_object_or_404(Post, pk=pk)
+
+        if not Like.objects.filter(user=actor, post=target).exists():
+            return Response({"detail": "you haven't liked this post"})
+
+        if target.author == actor:
+            Like.objects.filter(user=actor, post=target).delete()
+            return Response({"detail": "You have just unliked your own post"})
+        elif target.author != actor:
+            Like.objects.filter(user=actor, post=target).delete()
+            return Response({"detail": f"You have just unliked {target.author}'s post"})
+        else:
+            return Response({"detail": "error"})
