@@ -69,6 +69,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from notifications.models import Notification
 
+
 # List all users
 class UsersView(ReadOnlyModelViewSet):
     serializer_class = UserSerializer

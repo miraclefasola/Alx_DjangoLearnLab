@@ -12,6 +12,8 @@ from rest_framework import filters
 from rest_framework.generics import ListAPIView
 from django.contrib.contenttypes.models import ContentType
 from notifications.models import Notification
+
+
 class PostViewSet(ModelViewSet):
     model = Post
     serializer_class = PostSerializer
@@ -134,7 +136,7 @@ class LikeAPIVIEW(APIView):
         if post.author == actor:
             return Response({"detail": "You have just liked your own post"})
         elif post.author != actor:
-            
+
             Notification.objects.create(
                 recipient=post.author,
                 actor=request.user,
@@ -166,4 +168,3 @@ class UnlikeAPIVIEW(APIView):
             return Response({"detail": f"You have just unliked {target.author}'s post"})
         else:
             return Response({"detail": "error"})
-
