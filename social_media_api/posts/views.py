@@ -139,8 +139,8 @@ class LikeAPIVIEW(APIView):
                 recipient=post.author,
                 actor=request.user,
                 verb="liked your post",
-                target_content_type=ContentType.objects.get_for_model(post),
-                target_object_id=post.id,
+                content_type=ContentType.objects.get_for_model(post),
+                object_id=post.id,
             )
 
             return Response({"detail": f"You have just liked {post.author}'s post"})
@@ -167,4 +167,3 @@ class UnlikeAPIVIEW(APIView):
         else:
             return Response({"detail": "error"})
 
-#  ["permissions.IsAuthenticated", "generics.get_object_or_404(Post, pk=pk)", "Like.objects.get_or_create(user=request.user, post=post)", "Notification.objects.create"]

@@ -151,3 +151,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = "profile"
+# DEBUG = False
+# ALLOWED_HOSTS = ["www.myawesomeapp.com"] 
+# SECURE_BROWSER_XSS_FILTER = True        # Protects against basic XSS attacks
+# X_FRAME_OPTIONS = 'DENY'                # Prevents your site being embedded in iframes
+# SECURE_CONTENT_TYPE_NOSNIFF = True      # Stops browsers from guessing content types
+# SECURE_SSL_REDIRECT = True              # Forces HTTPS
+# SESSION_COOKIE_SECURE = True            # Only send cookies over HTTPS
+# CSRF_COOKIE_SECURE = True               # CSRF cookie

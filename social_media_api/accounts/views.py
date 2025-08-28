@@ -89,8 +89,8 @@ class UsersView(ReadOnlyModelViewSet):
                 recipient=user_to_follow,
                 actor=request.user,
                 verb="Followed",
-                target_content_type=ContentType.objects.get_for_model(user_to_follow),
-                target_object_id=user_to_follow.id,
+                content_type=ContentType.objects.get_for_model(user_to_follow),
+                object_id=user_to_follow.id,
             )
             return Response(
                 {"detail": f"you've just followed {user_to_follow.username}"}
