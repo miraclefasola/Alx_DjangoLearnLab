@@ -78,10 +78,26 @@ WSGI_APPLICATION = "social_media_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+user = os.environ.get("DB_USER")
+password = os.environ.get("DB_PASSWORD")
+host = os.environ.get("DB_HOST")
+# smtp config for password reset
+
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "ALX_API_Socialmedia",
+        "USER": user,
+        "PASSWORD": password,
+        "HOST": host,
+        "PORT": "3306",
     }
 }
 
@@ -151,6 +167,22 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = "profile"
+
+STATIC_URL = "static/"
+
+# smtp config for password reset
+load_dotenv()
+email = os.environ.get("smtp_email")
+password = os.environ.get("smtp_password")
+
+# SMTP configuratioon for password rest functionality
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = email
+EMAIL_HOST_PASSWORD = password
+DEFAULT_FROM_EMAIL = email
 # DEBUG = False
 # ALLOWED_HOSTS = ["www.myawesomeapp.com"]
 # SECURE_BROWSER_XSS_FILTER = True        # Protects against basic XSS attacks
