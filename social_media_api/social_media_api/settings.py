@@ -191,3 +191,4 @@ DEFAULT_FROM_EMAIL = email
 # SECURE_SSL_REDIRECT = True              # Forces HTTPS
 # SESSION_COOKIE_SECURE = True            # Only send cookies over HTTPS
 # CSRF_COOKIE_SECURE = True               # CSRF cookie
+STATIC_ROOT = BASE_DIR / "staticfiles"
